@@ -1,0 +1,115 @@
+{% block title %}Contact Support{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: #f4f9ff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: white;
+    padding: 35px 40px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.12);
+  }
+  h2 {
+    color: #007bff;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  label {
+    font-weight: 600;
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1.8px solid #b3d7ff;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.35);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  button {
+    margin-top: 30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 15px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 45px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.35);
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 10px 30px rgba(0, 86, 179, 0.5);
+  }
+  .success-message {
+    background-color: #d4edda;
+    border-left: 6px solid #28a745;
+    padding: 12px 18px;
+    border-radius: 8px;
+    color: #155724;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .error-message {
+    background-color: #f8d7da;
+    border-left: 6px solid #dc3545;
+    padding: 12px 18px;
+    border-radius: 8px;
+    color: #721c24;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+</style>
+
+<div class="container">
+  <h2>Contact Support</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="{% if message.tags == 'success' %}success-message{% else %}error-message{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" action="{% url 'patient_contact_support' %}">
+    {% csrf_token %}
+    <label for="subject">Subject</label>
+    <input type="text" id="subject" name="subject" placeholder="Brief summary" required>
+
+    <label for="email">Your Email</label>
+    <input type="email" id="email" name="email" placeholder="Your email address" value="{{ user.email }}" required>
+
+    <label for="message">Message</label>
+    <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+
+    <button type="submit">Send Message</button>
+  </form>
+</div>
+{% endblock %}

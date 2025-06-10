@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subadmin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            background-color: #c41c1c;
+            padding: 15px 30px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header span {
+            display: flex;
+            align-items: center;
+        }
+
+        header span::before {
+            content: "❤️";
+            margin-right: 10px;
+        }
+
+        .logout-button {
+            background-color: white;
+            color: #c41c1c;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 180px;
+            background-color: #1e1e1e;
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: white;
+            font-size: 15px;
+        }
+
+        .sidebar a:hover {
+            background-color: #333;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .card .icon {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #c41c1c;
+            color: white;
+            font-size: 14px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span>PULSE OF COMPASSION</span>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-button" type="submit">Logout</button>
+        </form>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <a href="{% url 'home' %}">🏠 Home</a>
+            <a href="{% url 'donor_dashboard' %}">👤 Donor</a>
+            <a href="{% url 'subadmin_patient_list' %}">🏥 Patient</a>
+            <a href="#">💉 Donations</a>
+            <a href="{% url 'subadmin_blood_requests' %}">📨 Blood request</a>
+            <a href="#">🕓 Request history</a>
+            <a href="{% url 'subadmin_blood_stock' %}">🩸 Blood stock</a>
+        </div>
+        <div class="main-content">
+            <div class="card-grid">
+                {% for blood_type, quantity in blood_inventory.items %}
+                <div class="card">
+                    <span class="icon">🩸 {{ blood_type }}</span>
+                    <strong>{{ quantity }}</strong>
+                </div>
+                {% endfor %}
+
+                <div class="card">
+                    <span class="icon">👥</span>
+                    <p>Total donors</p>
+                    <strong>{{ total_donors }}</strong>
+                </div>
+                <div class="card">
+                    <span class="icon">🔄</span>
+                    <p>Total requests</p>
+                    <strong>{{ total_requests }}</strong>
+                </div>
+                <div class="card">
+                    <span class="icon">✅</span>
+                    <p>Approved requests</p>
+                    <strong>{{ approved_requests }}</strong>
+                </div>
+                <div class="card">
+                    <span class="icon">💧</span>
+                    <p>Total blood unit (in ml)</p>
+                    <strong>{{ total_blood_volume }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 Blood Bank | Subadmin Panel
+    </div>
+</body>
+</html>

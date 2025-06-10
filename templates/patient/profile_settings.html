@@ -1,0 +1,79 @@
+{% block title %}Profile Settings{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: #fffaf0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .container {
+    max-width: 650px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 22px rgba(255, 165, 0, 0.15);
+  }
+  h2 {
+    color: #ff7f50;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+  }
+  label {
+    font-weight: 600;
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    color: #444;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1.6px solid #ccc;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="file"]:focus {
+    border-color: #ff7f50;
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 127, 80, 0.3);
+  }
+  button {
+    margin-top: 35px;
+    background: #ff7f50;
+    color: white;
+    border: none;
+    padding: 14px 0;
+    width: 100%;
+    font-size: 1.15rem;
+    border-radius: 40px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(255, 127, 80, 0.4);
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background: #d96132;
+    box-shadow: 0 12px 30px rgba(217, 97, 50, 0.6);
+  }
+  .profile-pic-preview {
+    margin-top: 15px;
+    max-width: 120px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 127, 80, 0.3);
+    display: block;
+  }
+</style>
+
+<div class="container">
+  <h2>Update Your Profile</h2>
+  <form method="POST" enctype="multipart/form-data" action="{% url 'patient_profile_settings' %}">
+    {% csrf_token %}
+    <label for="first_name">First Name</label>
+    <input type="text" id="

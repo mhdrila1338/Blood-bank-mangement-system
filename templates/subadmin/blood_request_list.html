@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blood Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px auto;
+            max-width: 900px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #c0392b;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        p {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #e74c3c;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: #27ae60;
+            border: none;
+            color: white;
+            padding: 7px 14px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #219150;
+        }
+        form {
+            margin: 0;
+        }
+        .status-approved {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #e67e22;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Blood Requests ({{ total_requests }})</h2>
+    <p>Total patients who requested blood: {{ total_patients }}</p>
+
+    {% if blood_requests %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Blood Group</th>
+                <th>Units</th>
+                <th>Reason</th>
+                <th>Requested At</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in blood_requests %}
+            <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ request.patient.user.get_full_name }}</td>
+                <td>{{ request.blood_group }}</td>
+                <td>{{ request.units_required }}</td>
+                <td>{{ request.reason }}</td>
+                <td>{{ request.requested_at|date:"d M Y H:i" }}</td>
+                <td>
+                    {% if request.status %}
+                        <span class="status-approved">Approved</span>
+                    {% else %}
+                        <span class="status-pending">Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not request.status %}
+                    <form action="{% url 'approve_request' request.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Approve</button>
+                    </form>
+                    {% else %}
+                        ---
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align:center; font-style: italic;">No blood requests found.</p>
+    {% endif %}
+
+</body>
+</html>

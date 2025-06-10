@@ -1,0 +1,65 @@
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: #f0f9ff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px 35px;
+    border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(0, 123, 255, 0.15);
+  }
+  h2 {
+    color: #0d6efd;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .notification {
+    padding: 18px 22px;
+    margin-bottom: 18px;
+    border-left: 6px solid #0d6efd;
+    background-color: #e7f1ff;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #0b5ed7;
+    box-shadow: 0 3px 12px rgba(13, 110, 253, 0.1);
+    transition: background-color 0.25s ease;
+  }
+  .notification.unread {
+    font-weight: 700;
+    background-color: #cfe2ff;
+  }
+  .notification:hover {
+    background-color: #d0e2ff;
+    cursor: pointer;
+  }
+  .empty-msg {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 30px 0;
+  }
+</style>
+
+<div class="container">
+  <h2>Your Notifications</h2>
+
+  {% if notifications %}
+    {% for note in notifications %}
+    <div class="notification {% if not note.read %}unread{% endif %}">
+      {{ note.message }}
+      <br />
+      <small class="text-muted">{{ note.timestamp|date:"d M Y, H:i" }}</small>
+    </div>
+    {% endfor %}
+  {% else %}
+  <p class="empty-msg">You have no notifications at the moment.</p>
+  {% endif %}
+</div>
+{% endblock %}

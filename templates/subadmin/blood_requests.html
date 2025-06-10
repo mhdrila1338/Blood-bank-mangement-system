@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blood Requests</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #D62828;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 14px 16px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #D62828;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Blood Requests</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Blood Group</th>
+                <th>Units Required</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Requested On</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in blood_requests %}
+            <tr>
+                <td>{{ request.patient.get_full_name }}</td>
+                <td>{{ request.blood_group }}</td>
+                <td>{{ request.units_required }}</td>
+                <td>{{ request.reason }}</td>
+                <td>{{ request.status }}</td>
+                <td>{{ request.requested_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center">No blood requests found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

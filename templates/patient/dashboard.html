@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Patient Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .navbar {
+      background-color: #dc3545;
+    }
+
+    .navbar-brand,
+    .nav-link {
+      color: white !important;
+      font-weight: 500;
+    }
+
+    .nav-link.active {
+      text-decoration: underline;
+    }
+
+    .dashboard-header {
+      padding: 40px 0;
+    }
+
+    .dashboard-header h2 {
+      font-weight: bold;
+    }
+
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .footer {
+      background-color: #dc3545;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 50px;
+    }
+
+    .btn-custom {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-custom:hover {
+      background-color: #c82333;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    i.fa {
+      margin-bottom: 10px;
+      color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="#">Blood Bank</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link {% if request.path == '/patient/dashboard/' %}active{% endif %}" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Dashboard Header -->
+<div class="container text-center dashboard-header">
+  <h2>Welcome, {{ request.user.first_name }}!</h2>
+  <p class="text-muted">Access your health services, request blood, and manage your profile from your dashboard.</p>
+</div>
+
+<!-- Dashboard Content -->
+<div class="container">
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card p-4 text-center">
+        <i class="fas fa-hand-holding-medical fa-2x"></i>
+        <h5 class="card-title">Request Blood</h5>
+        <p class="card-text">Submit a form to request a specific blood type based on your need.</p>
+        <a href="{% url 'blood_request_create' %}" class="btn btn-custom" aria-label="Request Blood">Request Now</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-4 text-center">
+        <i class="fas fa-history fa-2x"></i>
+        <h5 class="card-title">Request History</h5>
+        <p class="card-text">View a complete log of your past blood requests with status updates.</p>
+        <a href="{% url 'patient_request_history' %}" class="btn btn-custom" aria-label="View Request History">View History</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-4 text-center">
+        <i class="fas fa-tint fa-2x"></i>
+        <h5 class="card-title">Available Blood Stock</h5>
+        <p class="card-text">Check current blood availability by type and quantity in nearby banks.</p>
+        <a href="{% url 'available_blood_stock' %}" class="btn btn-custom" aria-label="Check Blood Stock">Check Stock</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card p-4 text-center">
+        <i class="fas fa-bell fa-2x"></i>
+        <h5 class="card-title">Notifications</h5>
+        <p class="card-text">Get alerts on matching donor availability, status changes, and more.</p>
+        <a href="{% url 'patient_notifications' %}" class="btn btn-custom" aria-label="View Notifications">View Alerts</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-4 text-center">
+        <i class="fas fa-user-cog fa-2x"></i>
+        <h5 class="card-title">Profile Settings</h5>
+        <p class="card-text">Update your personal information, photo, or contact details.</p>
+        <a href="{% url 'patient_profile_settings' %}" class="btn btn-custom" aria-label="Manage Profile">Manage Profile</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-4 text-center">
+        <i class="fas fa-headset fa-2x"></i>
+        <h5 class="card-title">Contact Support</h5>
+        <p class="card-text">Need help? Get in touch with our support team directly from here.</p>
+        <a href="{% url 'patient_contact_support' %}" class="btn btn-custom" aria-label="Contact Support">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="container">
+    <p>&copy; 2025 Blood Bank Management System. All rights reserved.</p>
+    <small>Powered by Django | Built for patient care and emergency support.</small>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Blood Stock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 40px;
+            text-align: center;
+        }
+        h2 {
+            color: #c0392b;
+            margin-bottom: 20px;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 60%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #e74c3c;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Available Blood Stock</h2>
+    {% if stocks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Blood Group</th>
+                <th>Available Units</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in stocks %}
+            <tr>
+                <td>{{ stock.blood_group }}</td>
+                <td>{{ stock.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No stock available.</p>
+    {% endif %}
+</body>
+</html>

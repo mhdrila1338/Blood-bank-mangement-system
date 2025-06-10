@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Urgent Blood Requests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #fffafc;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .card {
+      margin-top: 80px;
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: #dc3545;
+    }
+
+    .request-item {
+      border-left: 4px solid #dc3545;
+      background-color: #fff0f0;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card p-4">
+    <h3 class="card-title text-center mb-4">Urgent Blood Requests</h3>
+    <div class="request-item">
+      <strong>Patient Name:</strong> Rahul T. <br>
+      <strong>Blood Group:</strong> O+ <br>
+      <strong>Location:</strong> City Hospital, Ernakulam
+    </div>
+    <div class="request-item">
+      <strong>Patient Name:</strong> Nisha K. <br>
+      <strong>Blood Group:</strong> O+ <br>
+      <strong>Location:</strong> Sunrise Medical Center, Kochi
+    </div>
+  </div>
+</div>
+</body>
+</html>

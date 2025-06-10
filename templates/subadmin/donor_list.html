@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Donor List | Blood Bank</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9fafb;
+            margin: 0; padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #c41c1c;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+        }
+        main {
+            max-width: 960px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 1rem;
+            color: #c41c1c;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+        thead {
+            background-color: #c41c1c;
+            color: white;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        tbody tr:hover {
+            background-color: #f2f2f2;
+        }
+        .total-count {
+            margin-top: 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #555;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid #ccc;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                padding: 10px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+            td::before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 600;
+                text-align: left;
+                content: attr(data-label);
+                color: #c41c1c;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Blood Bank Donor List
+    </header>
+    <main>
+        <h1>All Registered Donors</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Blood Group</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donor in donors %}
+                <tr>
+                    <td data-label="Name">{{ donor.user.get_full_name }}</td>
+                    <td data-label="Blood Group">{{ donor.bloodgroup }}</td>
+                    <td data-label="Mobile">{{ donor.mobile }}</td>
+                    <td data-label="Email">{{ donor.email|default:"N/A" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align:center; color:#999;">No donors found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="total-count">
+            Total Donors Registered: <strong>{{ total_donors }}</strong>
+        </div>
+    </main>
+</body>
+</html>

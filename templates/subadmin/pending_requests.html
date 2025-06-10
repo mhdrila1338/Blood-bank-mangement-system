@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pending Blood Requests</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #d6336c;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f9d1df;
+        }
+        .approve-btn {
+            background-color: #28a745;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .approve-btn:hover {
+            background-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Pending Blood Requests</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Blood Group</th>
+            <th>Units</th>
+            <th>Urgency</th>
+            <th>Hospital</th>
+            <th>Location</th>
+            <th>Contact</th>
+            <th>Request Date</th>
+            <th>Reason</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in pending_requests %}
+        <tr>
+            <td>{{ request.id }}</td>
+            <td>{{ request.patient.username }}</td>
+            <td>{{ request.blood_group }}</td>
+            <td>{{ request.units_required }}</td>
+            <td>{{ request.urgency_level }}</td>
+            <td>{{ request.hospital_name|default:"N/A" }}</td>
+            <td>{{ request.location }}</td>
+            <td>{{ request.contact_phone }}</td>
+            <td>{{ request.request_date|date:"Y-m-d H:i" }}</td>
+            <td>{{ request.reason|default:"No reason provided" }}</td>
+            <td>
+                <form method="POST" action="{% url 'approve_blood_request' request.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="approve-btn">Approve</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="11" style="text-align:center;">No pending requests.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

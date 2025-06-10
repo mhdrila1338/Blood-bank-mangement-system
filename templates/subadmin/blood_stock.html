@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Blood Stock</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+            padding: 30px;
+        }
+        h2 {
+            color: #c41c1c;
+            text-align: center;
+        }
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            max-width: 700px;
+            margin: 40px auto;
+        }
+        .stock-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .blood-type {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #c41c1c;
+        }
+        .unit-count {
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h2>Available Blood Stock</h2>
+    <div class="stock-grid">
+        {% for blood_type, units in blood_stock.items %}
+        <div class="stock-card">
+            <div class="blood-type">{{ blood_type }}</div>
+            <div class="unit-count">{{ units }} units</div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

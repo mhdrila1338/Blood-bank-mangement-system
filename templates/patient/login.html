@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patient Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: url('https://media.istockphoto.com/photos/blood-donation-concept-picture-id1220217893?k=6&m=1220217893&s=170667a&w=0&h=yfT929iF97Www2IlPcz3SNLcKrun25PuUf1vjBvDO60=') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 420px;
+      color: #fff;
+    }
+
+    .glass-container h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00c6ff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0072ff;
+    }
+
+    .link {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .link a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    /* Fullscreen overlay for animation */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+      color: #00c6ff;
+      font-size: 2rem;
+      font-weight: bold;
+      user-select: none;
+      flex-direction: column;
+    }
+
+    #overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Spinner animation */
+    .spinner {
+      border: 5px solid rgba(0,0,0,0.1);
+      border-top: 5px solid #00c6ff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-container">
+    <h2>Patient Login</h2>
+    <form method="POST" id="loginForm">
+      {% csrf_token %}
+      <input type="text" name="username" placeholder="Username" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <div class="link">
+      Don't have an account? <a href="{% url 'patient_signup' %}">Signup</a>
+    </div>
+  </div>
+
+  <!-- Overlay animation -->
+  <div id="overlay">
+    <div class="spinner"></div>
+    <div>Logging in...</div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const overlay = document.getElementById('overlay');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // stop immediate submission
+
+      // Show overlay animation
+      overlay.classList.add('show');
+      
+      setTimeout(() => {
+        form.submit();
+      }, 700);
+    });
+  </script>
+</body>
+</html>
