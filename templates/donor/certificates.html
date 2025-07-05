@@ -38,14 +38,18 @@
 <div class="container">
   <div class="card p-4">
     <h3 class="text-center text-danger">Certificates & Badges</h3>
-    <div class="certificate mt-4">
-      <p><strong>Certificate of Appreciation</strong><br>5 Donations</p>
-      <a href="#" class="btn btn-red btn-sm">Download PDF</a>
-    </div>
-    <div class="certificate">
-      <p><strong>Gold Donor Badge</strong><br>Unlocked at 5+ Donations</p>
-      <a href="#" class="btn btn-red btn-sm">Download Badge</a>
-    </div>
+
+    {% if certificates %}
+      {% for certificate in certificates %}
+        <div class="certificate mt-4">
+          <p><strong>{{ certificate.title }}</strong></p>
+          <a href="{{ certificate.file.url }}" class="btn btn-red btn-sm" download>Download</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center mt-4 text-muted">No certificates available yet.</p>
+    {% endif %}
+
   </div>
 </div>
 </body>

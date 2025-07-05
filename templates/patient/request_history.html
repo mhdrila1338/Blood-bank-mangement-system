@@ -26,15 +26,20 @@
             <tr>
                 <td>{{ req.id }}</td>
                 <td>{{ req.blood_group }}</td>
-                <td>{{ req.quantity }}</td>
+                <td>{{ req.units }}</td>
                 <td>{{ req.reason }}</td>
                 <td>{{ req.requested_at|date:"d M Y H:i" }}</td>
                 <td>
-                    {% if req.status %}
-                        <span class="text-success fw-bold">Approved</span>
-                    {% else %}
+                    {% if req.status == 'Approved' %}
+                         <span class="text-success fw-bold">Approved</span>
+                    {% elif req.status == 'Pending' %}
                         <span class="text-warning fw-bold">Pending</span>
-                    {% endif %}
+                    {% elif req.status == 'Rejected' %}
+                        <span class="text-danger fw-bold">Rejected</span>
+                    {% else %}
+                        <span class="fw-bold">{{ req.status }}</span>
+                    {% endif %} 
+                    
                 </td>
             </tr>
             {% endfor %}

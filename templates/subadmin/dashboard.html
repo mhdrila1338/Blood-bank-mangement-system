@@ -1,160 +1,234 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Subadmin Dashboard</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f0f0;
-        }
+  <meta charset="UTF-8">
+  <title>Subadmin Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+    }
 
-        header {
-            background-color: #c41c1c;
-            padding: 15px 30px;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    header {
+      background-color: #c41c1c;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
 
-        header span {
-            display: flex;
-            align-items: center;
-        }
+    .logout-button {
+      background-color: white;
+      color: #c41c1c;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-        header span::before {
-            content: "❤️";
-            margin-right: 10px;
-        }
+    .container {
+      display: flex;
+    }
 
-        .logout-button {
-            background-color: white;
-            color: #c41c1c;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .sidebar {
+      width: 220px;
+      background-color: #9e0b0f;
+      color: white;
+      height: 100vh;
+      padding-top: 20px;
+    }
 
-        .container {
-            display: flex;
-        }
+    .sidebar a {
+      display: block;
+      padding: 15px 20px;
+      text-decoration: none;
+      color: white;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
 
-        .sidebar {
-            width: 180px;
-            background-color: #1e1e1e;
-            color: white;
-            height: 100vh;
-            padding-top: 20px;
-        }
+    .sidebar a:hover {
+      background-color: #7b0709;
+    }
 
-        .sidebar a {
-            display: block;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: white;
-            font-size: 15px;
-        }
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      background-color: #f1f1f1;
+    }
 
-        .sidebar a:hover {
-            background-color: #333;
-        }
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
 
-        .main-content {
-            flex: 1;
-            padding: 30px;
-        }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
 
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 20px;
-        }
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+    }
 
-        .card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-        }
+    .card .icon {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #c41c1c;
+    }
 
-        .card .icon {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 8px;
-        }
+    .card strong {
+      display: block;
+      font-size: 20px;
+      margin-top: 5px;
+    }
 
-        .footer {
-            text-align: center;
-            padding: 15px;
-            background-color: #c41c1c;
-            color: white;
-            font-size: 14px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    .footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #c41c1c;
+      color: white;
+      font-size: 14px;
+      margin-top: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+
+    thead {
+      background-color: #c41c1c;
+      color: white;
+    }
+
+    tbody tr {
+      border-top: 1px solid #eee;
+    }
+
+    tbody tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    a.approve-link {
+      color: green;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    a.approve-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <span>PULSE OF COMPASSION</span>
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button class="logout-button" type="submit">Logout</button>
-        </form>
-    </header>
+  <header>
+    <div>Blood Bank Management System</div>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="logout-button" type="submit">Logout</button>
+    </form>
+  </header>
 
-    <div class="container">
-        <div class="sidebar">
-            <a href="{% url 'home' %}">🏠 Home</a>
-            <a href="{% url 'donor_dashboard' %}">👤 Donor</a>
-            <a href="{% url 'subadmin_patient_list' %}">🏥 Patient</a>
-            <a href="#">💉 Donations</a>
-            <a href="{% url 'subadmin_blood_requests' %}">📨 Blood request</a>
-            <a href="#">🕓 Request history</a>
-            <a href="{% url 'subadmin_blood_stock' %}">🩸 Blood stock</a>
-        </div>
-        <div class="main-content">
-            <div class="card-grid">
-                {% for blood_type, quantity in blood_inventory.items %}
-                <div class="card">
-                    <span class="icon">🩸 {{ blood_type }}</span>
-                    <strong>{{ quantity }}</strong>
-                </div>
-                {% endfor %}
-
-                <div class="card">
-                    <span class="icon">👥</span>
-                    <p>Total donors</p>
-                    <strong>{{ total_donors }}</strong>
-                </div>
-                <div class="card">
-                    <span class="icon">🔄</span>
-                    <p>Total requests</p>
-                    <strong>{{ total_requests }}</strong>
-                </div>
-                <div class="card">
-                    <span class="icon">✅</span>
-                    <p>Approved requests</p>
-                    <strong>{{ approved_requests }}</strong>
-                </div>
-                <div class="card">
-                    <span class="icon">💧</span>
-                    <p>Total blood unit (in ml)</p>
-                    <strong>{{ total_blood_volume }}</strong>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="sidebar">
+      <a href="{% url 'home' %}">🏠 Home</a>
+      <a href="{% url 'subadmin_donation_requests' %}">👤 Donor</a>
+      <a href="{% url 'subadmin_patient_list' %}">🏥 Patient</a>
+      <a href="#">💉 Donations</a>
+      <a href="{% url 'subadmin_blood_requests' %}">📨 Blood request</a>
+      <a href="#">🕓 Request history</a>
+      <a href="{% url 'subadmin_blood_stock' %}">🩸 Blood stock</a>
+      <a href="{% url 'subadmin_donation_requests' %}">💉 Donations</a>
     </div>
 
-    <div class="footer">
-        © 2025 Blood Bank | Subadmin Panel
+    <div class="main-content">
+      <h2>Welcome back Administrator!</h2>
+      <p class="section-title">Available Blood per group in Liters</p>
+
+      <div class="card-grid">
+        {% for stock in blood_stock %}
+        <div class="card">
+          <div class="icon">🩸 {{ stock.blood_group }}</div>
+          <strong>{{ stock.units_available }} L</strong>
+        </div>
+        {% endfor %}
+
+        <div class="card">
+          <div class="icon">👥</div>
+          <p>Total donors</p>
+          <strong>{{ total_donors }}</strong>
+        </div>
+        <div class="card">
+          <div class="icon">🔄</div>
+          <p>Total requests</p>
+          <strong>{{ total_requests }}</strong>
+        </div>
+        <div class="card">
+          <div class="icon">✅</div>
+          <p>Approved requests</p>
+          <strong>{{ approved_requests }}</strong>
+        </div>
+      </div>
+
+      <p class="section-title" style="margin-top: 40px;">Pending Donation Requests</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Donor</th>
+            <th>Blood Group</th>
+            <th>Units</th>
+            <th>Document</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for donation in pending_donations %}
+          <tr>
+            <td>{{ donation.donor.username }}</td>
+            <td>{{ donation.blood_group }}</td>
+            <td>{{ donation.units }}</td>
+            <td>
+              <a href="{{ donation.document.url }}" target="_blank" style="color: #c41c1c;">View File</a>
+            </td>
+            <td>{{ donation.status }}</td>
+            <td>
+              <a class="approve-link" href="{% url 'approve_donation' donation.id %}">Approve</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">No pending donations.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
+
+  <div class="footer">
+    © 2025 Blood Bank | Subadmin Panel
+  </div>
 </body>
 </html>

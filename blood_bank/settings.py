@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'patient.middleware.DisableBackButtonMiddleware',
 ]
 
 ROOT_URLCONF = 'blood_bank.urls'
@@ -129,3 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/subadmin/dashboard/'
 LOGIN_URL = '/subadmin/login/'
 
+LOGIN_URL = '/patient/login/'
+LOGIN_REDIRECT_URL = '/patient/dashboard/'
+LOGOUT_REDIRECT_URL = '/patient/login/'

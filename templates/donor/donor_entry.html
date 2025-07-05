@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Donor Signup</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      overflow-x: hidden;
+    }
+
+    .navbar-custom {
+      background-color: #bb1e1e;
+    }
+
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link {
+      color: white;
+    }
+
+    .signup-container {
+      display: flex;
+      min-height: 100vh;
+      animation: fadeIn 0.8s ease-in-out;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .left-panel {
+      background: linear-gradient(135deg, #c42a2a, #a80d0d);
+      color: white;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      text-align: center;
+      animation: slideInLeft 1s ease;
+    }
+
+    .left-panel img {
+      width: 220px;
+      max-width: 90%;
+      margin-bottom: 1.5rem;
+      animation: popIn 1.2s ease;
+    }
+
+    .left-panel h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .right-panel {
+      flex: 1;
+      background-color: white;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      animation: slideInRight 1s ease;
+    }
+
+    form {
+      width: 100%;
+    }
+
+    form p {
+      margin-bottom: 1rem;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      transition: 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #bb1e1e;
+      box-shadow: 0 0 0 0.2rem rgba(187, 30, 30, 0.25);
+    }
+
+    .btn-custom {
+      background-color: #bb1e1e;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-custom:hover {
+      background-color: #e52e2e;
+      transform: scale(1.03);
+    }
+
+    .login-link {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .btn-login {
+      color: #bb1e1e;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .btn-login:hover {
+      color: #e52e2e;
+      text-decoration: underline;
+    }
+
+    .contact-section {
+      background-color: #ffffff;
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid #ddd;
+    }
+
+    .loading-spinner {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .signup-container {
+        flex-direction: column;
+      }
+
+      .left-panel, .right-panel {
+        border-radius: 0;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Blood Bank</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon text-white"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'donor_login' %}">Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Signup Section -->
+<div class="container-fluid d-flex justify-content-center align-items-center py-5">
+  <div class="signup-container col-11 col-md-10 col-lg-8 shadow-lg">
+    <!-- Left -->
+    <div class="left-panel">
+      <img src="https://logodix.com/logo/1940104.jpg" alt="Donor Icon">
+      <h2>Join as a Donor</h2>
+      <p>Register to donate blood and save lives. Your one step can give someone a second chance at life.</p>
+    </div>
+
+    <!-- Right -->
+    <div class="right-panel">
+      <h3 class="text-center mb-4">Create Donor Account</h3>
+      <form method="post" enctype="multipart/form-data" onsubmit="showLoading()">
+        {% csrf_token %}
+        {{ userform.as_p }}
+        {{ donorform.as_p }}
+        <a href="{% url 'donor_signup'%}" class="btn btn-custom mt-3">Sign Up</a>
+      </form>
+
+      <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-danger" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div class="login-link">
+        Already have an account? <a href="{% url 'donor_login' %}" class="btn-login">Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Info -->
+<div class="contact-section">
+  <h5>Need Help?</h5>
+  <p>Contact us at <strong>support@bloodbank.com</strong> or call <strong>+91-98765-43210</strong></p>
+</div>
+
+<script>
+  function showLoading() {
+    document.getElementById('loadingSpinner').style.display = 'flex';
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
