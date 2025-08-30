@@ -34,6 +34,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'patient.middleware.DisableBackButtonMiddleware',
+    'patient.middleware.DisableBackButtonMiddleware',
 ]
 
 ROOT_URLCONF = 'blood_bank.urls'
