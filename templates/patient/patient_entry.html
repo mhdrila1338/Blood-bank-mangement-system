@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Patient Signup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background-color: #00b894;
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: white;
+        }
+
+        .signup-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+            text-align: center;
+        }
+
+        .left-panel img {
+            width: 240px;
+            max-width: 90%;
+            margin-bottom: 1.5rem;
+        }
+
+        .left-panel h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .left-panel p {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .right-panel {
+            flex: 1;
+            background-color: white;
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            transition: 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #00b894;
+            box-shadow: 0 0 0 0.2rem rgba(0, 184, 148, 0.25);
+        }
+
+        .btn-custom {
+            background-color: #00b894;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            transition: 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-custom:hover {
+            background-color: #019875;
+        }
+
+        .login-link {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .login-link a {
+            text-decoration: none;
+            color: #00b894;
+        }
+
+        .contact-section {
+            background-color: #ffffff;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .contact-section h5 {
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .signup-container {
+                flex-direction: column;
+            }
+
+            .left-panel, .right-panel {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Blood Bank</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon text-white"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto me-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'patient_login' %}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Signup Form -->
+<div class="container-fluid d-flex justify-content-center align-items-center py-5">
+    <div class="signup-container col-11 col-md-10 col-lg-8 shadow-lg rounded-4">
+        <!-- Left panel -->
+        <div class="left-panel">
+            <img src="https://cdn-icons-png.flaticon.com/512/9790/9790491.png" alt="Patient Chat Icon">
+            <h2>Need Blood Support?</h2>
+            <p>Register as a patient to easily request blood, track your requests, and get the support you need with just a few clicks.</p>
+        </div>
+
+        <!-- Right panel -->
+        <div class="right-panel">
+            <h3 class="mb-4 text-center">Create Patient Account</h3>
+            <form method="post" enctype="multipart/form-data" onsubmit="showLoading()">
+                {% csrf_token %}
+                {{ userform.as_p }}
+                {{ patientform.as_p }}
+                <a href="{% url 'patient_signup' %}" class="btn btn-custom mt-3">Sign up</a>
+                
+            </form>
+            <div class="loading-spinner mt-3" id="loadingSpinner">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="login-link">
+                Already have an account? <a href="{% url 'patient_login' %}" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Section -->
+<div class="contact-section">
+    <h5>Need Help?</h5>
+    <p>Contact us at <strong>support@bloodbank.com</strong> or call <strong>+91-98765-43210</strong></p>
+</div>
+
+<script>
+    function showLoading() {
+        document.getElementById('loadingSpinner').style.display = 'flex';
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

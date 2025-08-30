@@ -1,21 +1,29 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from . import forms
-from .models import Donation, UrgentRequest, HealthTip, Certificate
-from .forms import ProfileUpdateForm
+from django.utils import timezone
+from datetime import timedelta
+from datetime import timedelta, date
+from django.contrib.auth import logout
+from sub_admin.views import home_view
 
-# Donor Signup View
+from .models import Donor, Donation, UrgentRequest, HealthTip, Certificate
+from .forms import DonorUserForm, DonorForm, ProfileUpdateForm, DonationForm
+
+def donor_entry(request):
+    return render(request,'donor/donor_entry.html')
+
+# Signup View
 def donor_signup_view(request):
-    userform = forms.DonorUserForm()
-    donorForm = forms.DonorForm()
+    userform = DonorUserForm()
+    donorForm = DonorForm()
     context = {'userform': userform, "donorForm": donorForm}
 
     if request.method == "POST":
-        userform = forms.DonorUserForm(request.POST)
-        donorForm = forms.DonorForm(request.POST, request.FILES)
+        userform = DonorUserForm(request.POST)
+        donorForm = DonorForm(request.POST, request.FILES)
         if userform.is_valid() and donorForm.is_valid():
             user = userform.save()
             user.set_password(user.password)
@@ -30,10 +38,9 @@ def donor_signup_view(request):
             donor_group.user_set.add(user)
 
             return redirect('donor_login')
-
     return render(request, "donor/donor_signup.html", context=context)
 
-# Donor Login View
+# Login View
 def donor_login_view(request):
     if request.method == 'POST':
         uname = request.POST.get("username")
@@ -47,12 +54,7 @@ def donor_login_view(request):
             return redirect('donor_login')
     return render(request, "donor/donor_login.html")
 
-# Donor Dashboard
-@login_required(login_url='donor_login')
-def donor_dashboard_view(request):
-    return render(request, 'donor/afterlogin.html')
-
-# Role-based Redirection after Login
+# After login redirection
 @login_required
 def afterlogin_view(request):
     user = request.user
@@ -65,35 +67,40 @@ def afterlogin_view(request):
     else:
         return redirect('home_view')
 
-# Show latest donation and next eligible donation date
-@login_required
-def next_donation_date(request):
-    latest_donation = Donation.objects.filter(donor=request.user).order_by('-date').first()
-    return render(request, 'donor/next_donation_date.html', {'latest_donation': latest_donation})
+# Dashboard
+@login_required(login_url='donor_login')
+def donor_dashboard_view(request):
+    return render(request, 'donor/afterlogin.html')
 
-# View donation stats for logged-in donor
+# Donation stats
 @login_required
 def donation_stats(request):
-    donations = Donation.objects.filter(donor=request.user).order_by('-date')
+    donations = Donation.objects.filter(donor=request.user).order_by('-created_at')
     total_donations = donations.count()
     return render(request, 'donor/donation_stats.html', {
         'donations': donations,
         'total_donations': total_donations
     })
 
-# Show urgent blood requests
+# Urgent Requests
 @login_required
-def urgent_requests(request):
-    requests = UrgentRequest.objects.all().order_by('-created_at')
-    return render(request, 'donor/urgent_requests.html', {'requests': requests})
+def urgent_requests_view(request):
+    donor = get_object_or_404(Donor, user=request.user)
+    matching_requests = UrgentRequest.objects.filter(
+        blood_group=donor.bloodgroup,
+        status='Pending'
+    ).order_by('-required_date')
+    return render(request, 'donor/urgent_requests.html', {
+        'urgent_requests': matching_requests
+    })
 
-# Show health tips
+# Health Tips
 @login_required
 def health_tips(request):
     tips = HealthTip.objects.all()
     return render(request, 'donor/health_tips.html', {'tips': tips})
 
-# Update donor profile
+# Update Profile
 @login_required
 def update_profile(request):
     if request.method == 'POST':
@@ -106,13 +113,37 @@ def update_profile(request):
         form = ProfileUpdateForm(instance=request.user)
     return render(request, 'donor/update_profile.html', {'form': form})
 
-# Show donor certificates
+# Donate Blood
 @login_required
-def certificates(request):
-    certificates = Certificate.objects.filter(donor=request.user)
+def donate_blood_view(request):
+    if request.method == 'POST':
+        form = DonationForm(request.POST, request.FILES)
+        if form.is_valid():
+            donation = form.save(commit=False)
+            donation.donor = request.user
+            donation.save()
+            return redirect('donor_dashboard')  # update this to your success URL
+    else:
+        form = DonationForm()
+
+    today = date.today()
+    next_eligible_date = today + timedelta(days=90)
+
+    return render(request, 'donor/add_donation.html', {
+        'form': form,
+        'today': today,
+        'next_eligible_date': next_eligible_date
+    })
+
+# Certificates
+@login_required
+def donor_certificates(request):
+    donor = get_object_or_404(Donor, user=request.user)
+    certificates = Certificate.objects.filter(donor=donor)
     return render(request, 'donor/certificates.html', {'certificates': certificates})
 
-# Add donation page - add login protection
-@login_required
-def add_donation(request):
-    return render(request, 'donor/add_donation.html')
+def donor_logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, "You have been successfully logged out.")
+    return redirect('donor_login')

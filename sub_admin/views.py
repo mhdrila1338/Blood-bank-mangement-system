@@ -2,11 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from donor.models import Donor
-from patient.models import Patient, BloodRequest
-from django.views.decorators.http import require_POST
+from collections import defaultdict
+from datetime import timedelta, date
+from django.db.models import Sum
+
+from patient.models import BloodRequest, Patient
+from donor.models import Donor, Donation, UrgentRequest
 from .models import BloodStock
-from patient.forms import PatientForm  # already created 
+from patient.forms import PatientForm
+
 # Home page
 def home_view(request):
     return render(request, 'home_view.html')
@@ -22,96 +26,44 @@ def subadmin_login_view(request):
             if user.is_superuser:
                 login(request, user)
                 return redirect('subadmin_dashboard')
-            elif hasattr(user, 'donor'):
-                messages.error(request, "Access Denied! Donors are not allowed to access the subadmin panel.")
-            elif hasattr(user, 'patient'):
-                messages.error(request, "Access Denied! Patients are not allowed to access the subadmin panel.")
+            elif hasattr(user, 'donor') or hasattr(user, 'patient'):
+                messages.error(request, "Access Denied! Only subadmins can login here.")
             else:
                 messages.error(request, "Access Denied! Unauthorized user.")
         else:
             messages.error(request, "Invalid username or password.")
     return render(request, 'subadmin/login.html')
 
-@login_required(login_url='subadmin_login')
-def subadmin_dashboard(request):
-    if not request.user.is_superuser:
-        messages.error(request, "Unauthorized access!")
-        return redirect('subadmin_login')
-
-    total_donors = Donor.objects.count()
-    total_patients = Patient.objects.count()
-    total_requests = BloodRequest.objects.count()
-    blood_stock = BloodStock.objects.all()
-
-    context = {
-        'total_donors': total_donors,
-        'total_patients': total_patients,
-        'total_requests': total_requests,
-        'blood_stock': blood_stock,
-    }
-    return render(request, 'subadmin/dashboard.html', context)
-
+# Check if user is subadmin
 def is_subadmin(user):
     return user.is_superuser
 
+# Dashboard
+@login_required(login_url='subadmin_login')
+@user_passes_test(is_subadmin)
+def subadmin_dashboard(request):
+    context = {
+        'total_donors': Donor.objects.count(),
+        'total_patients': Patient.objects.count(),
+        'total_requests': BloodRequest.objects.count(),
+        'blood_stock': BloodStock.objects.all(),
+        'pending_donations': Donation.objects.filter(status='Pending'),
+    }
+    return render(request, 'subadmin/dashboard.html', context)
+
+# Donor list
 @user_passes_test(is_subadmin, login_url='subadmin_login')
 def donor_list(request):
     donors = Donor.objects.all()
-    total_donors = donors.count()
-    return render(request, "subadmin/donor_list.html", {
-        "donors": donors,
-        "total_donors": total_donors,
-    })
+    return render(request, "subadmin/donor_list.html", {"donors": donors})
 
+# Patient list
+@user_passes_test(is_subadmin, login_url='subadmin_login')
 def patient_list_view(request):
-    patients = Patient.objects.all()
-    return render(request, 'subadmin/patient_list.html', {'patients': patients})
+    return render(request, 'subadmin/patient_list.html', {'patients': Patient.objects.all()})
 
+# Edit & Delete Patient
 @user_passes_test(is_subadmin, login_url='subadmin_login')
-def subadmin_blood_requests(request):
-    total_requests = BloodRequest.objects.count()
-    total_patients = BloodRequest.objects.values('patient').distinct().count()
-    blood_requests = BloodRequest.objects.all().order_by('-requested_at')
-    context = {
-        'total_requests': total_requests,
-        'total_patients': total_patients,
-        'blood_requests': blood_requests,
-    }
-    return render(request, 'subadmin/blood_request_list.html', context)
-
-@user_passes_test(is_subadmin, login_url='subadmin_login')
-def pending_requests(request):
-    pending = BloodRequest.objects.filter(status='Pending').order_by('-requested_at')
-    return render(request, 'subadmin/pending_requests.html', {'pending_requests': pending})
-
-@user_passes_test(is_subadmin, login_url='subadmin_login')
-@require_POST
-def approve_request(request, request_id):
-    blood_request = get_object_or_404(BloodRequest, id=request_id)
-    if blood_request.status != "Approved":
-        try:
-            blood_stock = BloodStock.objects.get(blood_group=blood_request.blood_group)
-        except BloodStock.DoesNotExist:
-            messages.error(request, f"No stock found for blood group {blood_request.blood_group}.")
-            return redirect('pending_requests')
-
-        if blood_stock.quantity >= blood_request.quantity:
-            blood_stock.quantity -= blood_request.quantity
-            blood_stock.save()
-
-            blood_request.status = "Approved"
-            blood_request.save()
-            messages.success(request, f'Request #{request_id} approved successfully.')
-        else:
-            messages.error(request, f"Insufficient stock for blood group {blood_request.blood_group}.")
-    else:
-        messages.info(request, f'Request #{request_id} is already approved.')
-
-    return redirect('pending_requests')
-
-def available_blood_stock(request):
-    stocks = BloodStock.objects.all()
-    return render(request, 'subadmin/available_blood_stock.html', {'stocks': stocks})
 def patient_edit_view(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     form = PatientForm(request.POST or None, instance=patient)
@@ -120,20 +72,106 @@ def patient_edit_view(request, pk):
         return redirect('subadmin_patient_list')
     return render(request, 'subadmin/patient_edit.html', {'form': form})
 
+@user_passes_test(is_subadmin, login_url='subadmin_login')
 def patient_delete_view(request, pk):
-    patient = get_object_or_404(Patient, pk=pk)
-    patient.delete()
+    get_object_or_404(Patient, pk=pk).delete()
     return redirect('subadmin_patient_list')
-def blood_stock_view(request):
-    dummy_stock = {
-        'A+': 8,
-        'A-': 3,
-        'B+': 5,
-        'B-': 2,
-        'AB+': 4,
-        'AB-': 1,
-        'O+': 10,
-        'O-': 2,
+
+# Blood Requests
+@user_passes_test(is_subadmin, login_url='subadmin_login')
+def subadmin_blood_requests(request):
+    context = {
+        'blood_requests': BloodRequest.objects.select_related('patient__user').all(),
+        'urgent_requests': UrgentRequest.objects.select_related('user').all(),
     }
-    return render(request, 'sub_admin/blood_stock.html', {'blood_stock': dummy_stock})
-# Note: The above code assumes that the necessary models and forms are already defined in the respective files.
+    return render(request, 'subadmin/blood_requests.html', context)
+
+@user_passes_test(is_subadmin, login_url='subadmin_login')
+def approve_blood_request(request, request_id):
+    blood_request = get_object_or_404(BloodRequest, id=request_id)
+
+    if blood_request.status != 'Pending':
+        messages.warning(request, 'This request is already processed.')
+        return redirect('subadmin_blood_requests')
+
+    try:
+        stock = BloodStock.objects.get(blood_group=blood_request.blood_group)
+    except BloodStock.DoesNotExist:
+        messages.error(request, 'Blood group not found in stock.')
+        return redirect('subadmin_blood_requests')
+
+    if stock.units_available >= blood_request.units:
+        stock.units_available -= blood_request.units
+        stock.save()
+
+        blood_request.status = 'Approved'
+        blood_request.save()  # 🔥 IMPORTANT: Make sure this is here
+        messages.success(request, f'Request approved and {blood_request.units} unit(s) deducted from stock.')
+    else:
+        messages.error(request, f'Not enough stock to approve the request. Only {stock.units_available} unit(s) available.')
+
+    return redirect('subadmin_blood_requests')
+
+@user_passes_test(is_subadmin, login_url='subadmin_login')
+def reject_blood_request(request, request_id):
+    blood_request = get_object_or_404(BloodRequest, id=request_id)
+    if blood_request.status == "Pending":
+        blood_request.status = "Rejected"
+        blood_request.save()
+        messages.warning(request, "Request rejected.")
+    else:
+        messages.info(request, "Already processed.")
+    return redirect('subadmin_blood_requests')
+
+
+
+def blood_requests_view(request):
+    from patient.models import BloodRequest
+    blood_requests = BloodRequest.objects.all().order_by('-requested_at')  # Fresh every time
+    return render(request, 'subadmin/blood_requests.html', {'blood_requests': blood_requests})
+
+
+
+# Blood Stock View (Dynamic)
+@user_passes_test(is_subadmin, login_url='subadmin_login')
+def available_blood_stock(request):
+    from .models import BloodStock  # ensure you're using the correct model
+
+    # Initialize all blood groups with 0
+    stock = {bg[0]: 0 for bg in BloodStock.BLOOD_GROUPS}
+
+    # Update actual available units from DB
+    for entry in BloodStock.objects.all():
+        stock[entry.blood_group] = entry.units_available
+
+    return render(request, 'subadmin/blood_stock.html', {'stock': stock})
+
+# Donation Requests
+@login_required
+def subadmin_donation_requests(request):
+    donations = Donation.objects.all().order_by('-created_at')
+    return render(request, 'subadmin/donation_requests.html', {'donations': donations})
+
+@login_required
+def approve_donation(request, donation_id):
+    donation = get_object_or_404(Donation, id=donation_id)
+    donation.status = 'Approved'    
+    donation.save()
+    stock, _ = BloodStock.objects.get_or_create(blood_group=donation.blood_group)
+    stock.units_available += donation.units
+    stock.save()
+    return redirect('subadmin_donation_requests')
+
+@login_required
+def reject_donation(request, donation_id):
+    donation = get_object_or_404(Donation, id=donation_id)
+    donation.status = 'Rejected'
+    donation.save()
+    messages.warning(request, 'Donation rejected.')
+    return redirect('subadmin_donation_requests')
+
+@login_required
+def pending_donations_view(request):
+    return render(request, 'subadmin/donation_requests.html', {
+        'donations': Donation.objects.filter(status='Pending')
+    })

@@ -1,99 +1,107 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Request Blood</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            background-color: white;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #dc3545;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        label {
-            font-weight: bold;
-            margin-bottom: 6px;
-            display: block;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            margin-bottom: 15px;
-            border: 1.5px solid #ced4da;
-            border-radius: 5px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: #dc3545;
-            outline: none;
-        }
-        .text-danger {
-            color: #dc3545;
-            margin-top: -12px;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-        button {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 12px 0;
-            width: 100%;
-            font-size: 1.1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #b02a37;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Request Blood</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #dc3545;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border: 1.5px solid #ced4da;
+      border-radius: 5px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #dc3545;
+      outline: none;
+    }
+    .text-danger {
+      color: #dc3545;
+      margin-top: -12px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+    button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 12px 0;
+      width: 100%;
+      font-size: 1.1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #b02a37;
+    }
+  </style>
 </head>
 <body>
-<div class="container mt-5" style="max-width: 500px;">
-  <h2 class="mb-4 text-danger">Request Blood</h2>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="{{ form.blood_group.id_for_label }}" class="form-label">Blood Group</label>
-      {{ form.blood_group }}
-      {% if form.blood_group.errors %}
-        <div class="text-danger">{{ form.blood_group.errors }}</div>
-      {% endif %}
-    </div>
-    <div class="mb-3">
-      <label for="{{ form.quantity.id_for_label }}" class="form-label">Units Needed</label>
-      {{ form.quantity }}
-      {% if form.quantity.errors %}
-        <div class="text-danger">{{ form.quantity.errors }}</div>
-      {% endif %}
-    </div>
-    <div class="mb-3">
-      <label for="{{ form.reason.id_for_label }}" class="form-label">Reason</label>
-      {{ form.reason }}
-      {% if form.reason.errors %}
-        <div class="text-danger">{{ form.reason.errors }}</div>
-      {% endif %}
-    </div>
-    <button type="submit" class="btn btn-danger">Submit Request</button>
-  </form>
-</div>
+  <div class="container mt-5">
+    <h2>Request Blood</h2>
+    <form method="POST" novalidate>
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="{{ form.blood_group.id_for_label }}">Blood Group</label>
+        {{ form.blood_group }}
+        {% if form.blood_group.errors %}
+          <div class="text-danger">{{ form.blood_group.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.units.id_for_label }}">Units Needed</label>
+        {{ form.units }}
+        {% if form.units.errors %}
+          <div class="text-danger">{{ form.units.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.reason.id_for_label }}">Reason</label>
+        {{ form.reason }}
+        {% if form.reason.errors %}
+          <div class="text-danger">{{ form.reason.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit">Submit Request</button>
+    </form>
+  </div>
 </body>
 </html>

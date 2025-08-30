@@ -2,222 +2,196 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Blood Bank | Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <title>Blood Bank Management System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #f5f7fa;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fc;
     }
-
     .navbar {
-      background: linear-gradient(to right, #dc3545, #6610f2);
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 15px 0;
     }
-
     .navbar-brand {
-      font-weight: 700;
       font-size: 1.8rem;
-    }
-
-    .hero {
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-      color: white;
-      padding: 120px 0;
-      text-align: center;
-      position: relative;
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
       font-weight: 700;
-      margin-bottom: 20px;
+      color: #dc3545 !important;
     }
-
-    .hero p {
+    .nav-link {
+      font-weight: 500;
+      color: #333 !important;
+    }
+    .hero-section {
+      background: linear-gradient(120deg, #fff0f0, #fdfdfd);
+      padding: 100px 0;
+      text-align: center;
+    }
+    .hero-section h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: #dc3545;
+    }
+    .hero-section p {
       font-size: 1.2rem;
-      margin-bottom: 30px;
+      color: #555;
     }
-
-    .hero .btn {
-      font-size: 1rem;
+    .hero-section .btn {
+      font-size: 1.1rem;
       padding: 12px 30px;
       border-radius: 30px;
     }
-
-    .curve-divider {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #dc3545;
+      margin-bottom: 40px;
     }
-
-    .card-feature {
-      border: none;
+    .feature-card {
+      background-color: #fff;
       border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       padding: 30px;
       transition: transform 0.3s ease;
-      background-color: white;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
-
-    .card-feature:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    .feature-card:hover {
+      transform: translateY(-5px);
     }
-
-    .feature-icon {
-      width: 80px;
-      margin-bottom: 20px;
-    }
-
-    .info-section {
-      background-color: #ffffff;
-      padding: 60px 0;
-    }
-
-    footer {
-      background: #1c1c1c;
-      color: #aaa;
-      padding: 50px 0;
-    }
-
-    footer a {
-      color: #aaa;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      color: white;
+    .footer {
+      background-color: #fff;
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid #eee;
+      margin-top: 60px;
     }
   </style>
 </head>
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark py-3">
+<nav class="navbar navbar-expand-lg fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="#">🩸 Blood Bank</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <a class="navbar-brand" href="#">Blood Bank System</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto">
-        <!-- Donor -->
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#why">Why Us</a></li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Donor</a>
+          <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Login</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'donor_signup' %}">Sign Up</a></li>
-            <li><a class="dropdown-item" href="{% url 'donor_login' %}">Login</a></li>
+            <li><a class="dropdown-item" href="{% url 'donor_entry' %}">Donor</a></li>
+            <li><a class="dropdown-item" href="{% url 'entry_patient' %}">Patient</a></li>
+            <li><a class="dropdown-item" href="{% url 'subadmin_login' %}">Subadmin</a></li>
           </ul>
         </li>
-        <!-- Patient -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Patient</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'patient_signup' %}">Sign Up</a></li>
-            <li><a class="dropdown-item" href="{% url 'patient_login' %}">Login</a></li>
-          </ul>
-        </li>
-        <!-- Subadmin -->
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'subadmin_login' %}">Subadmin</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/contact">Contact</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'donor_signup' %}">Signup</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
 <!-- Hero Section -->
-<section class="hero">
-  <div class="container" data-aos="fade-up">
+<section class="hero-section" data-aos="fade-up">
+  <div class="container">
     <h1>Donate Blood, Save Lives</h1>
-    <p>Every drop counts. Be a hero in someone's life today.</p>
-    <a href="{% url 'donor_signup' %}" class="btn btn-light">Become a Donor</a>
-  </div>
-  <svg class="curve-divider" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120"><path fill="#fff" fill-opacity="1" d="M0,64L1440,0L1440,320L0,320Z"></path></svg>
-</section>
-
-<!-- Features Section -->
-<section class="container py-5">
-  <div class="row text-center g-4">
-    <div class="col-md-4" data-aos="zoom-in">
-      <div class="card-feature">
-        <img src="https://img.icons8.com/fluency/96/like--v1.png" alt="Donor" class="feature-icon" />
-        <h4>Become a Donor</h4>
-        <p>Register and donate blood to save lives in your community.</p>
-        <a href="{% url 'donor_login' %}" class="btn btn-outline-danger mt-2">Join Now</a>
-      </div>
-    </div>
-    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
-      <div class="card-feature">
-        <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/blood-donation-9101878-7415032.png" alt="Patient" class="feature-icon" />
-        <h4>Request Blood</h4>
-        <p>Patients can request safe blood from verified donors easily.</p>
-        <a href="{% url 'patient_login' %}" class="btn btn-outline-danger mt-2">Request Now</a>
-      </div>
-    </div>
-    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-      <div class="card-feature">
-        <img src="https://img.icons8.com/fluency/96/admin-settings-male.png" alt="Admin" class="feature-icon" />
-        <h4>Subadmin Portal</h4>
-        <p>Manage donations, requests, and inventory efficiently.</p>
-        <a href="{% url 'subadmin_login' %}" class="btn btn-outline-danger mt-2">Login</a>
-      </div>
-    </div>
+    <p>Your one drop can bring a smile to someone’s life.</p>
+    <a href="{% url 'donor_signup' %}" class="btn btn-danger mt-3">Join Now</a>
   </div>
 </section>
 
-<!-- Why Donate Section -->
-<section class="info-section">
+<!-- Features -->
+<section id="features" class="py-5">
+  <div class="container">
+    <h2 class="section-title">Our Features</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3" data-aos="fade-up">
+        <div class="feature-card text-center">
+          <h5 class="text-danger">Donor Portal</h5>
+          <p>Register and manage your blood donations easily.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-card text-center">
+          <h5 class="text-danger">Request Blood</h5>
+          <p>Patients can request specific blood types when needed.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-card text-center">
+          <h5 class="text-danger">Subadmin Panel</h5>
+          <p>Manage inventory, donors, and patients effectively.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-card text-center">
+          <h5 class="text-danger">Track Requests</h5>
+          <p>Real-time status tracking for blood donation and requests.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about" class="py-5 bg-light">
   <div class="container">
     <div class="row align-items-center">
-      <div class="col-lg-6 mb-4" data-aos="fade-right">
-        <img src="https://cdn.pixabay.com/photo/2020/02/19/06/23/earth-4861456_1280.jpg" class="img-fluid rounded" alt="Why Donate Blood" />
+      <div class="col-md-6" data-aos="fade-right">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135823.png" class="img-fluid" alt="About" />
       </div>
-      <div class="col-lg-6" data-aos="fade-left">
-        <h2>Why Donate Blood?</h2>
-        <p>One donation can save up to 3 lives. Your small step can mean the world to someone in need.</p>
+      <div class="col-md-6" data-aos="fade-left">
+        <h2 class="section-title">About Our System</h2>
+        <p>We are committed to creating a streamlined and efficient blood donation management system. With smart features for donors, patients, and administrators, we help connect those in need with lifesaving donations instantly.</p>
         <ul>
-          <li>Support emergency cases and surgeries</li>
-          <li>Help cancer and maternity patients</li>
-          <li>Be a reliable part of your community</li>
+          <li>Secure and simple user experience</li>
+          <li>Quick request and donation management</li>
+          <li>Automated blood stock tracking</li>
         </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Us -->
+<section id="why" class="py-5">
+  <div class="container">
+    <h2 class="section-title">Why Choose Us?</h2>
+    <div class="row g-4 text-center">
+      <div class="col-md-4" data-aos="fade-up">
+        <div class="feature-card">
+          <h5>Efficiency</h5>
+          <p>Automated workflows reduce wait time and human error.</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-card">
+          <h5>Transparency</h5>
+          <p>Track donations, requests, and inventory live on your dashboard.</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-card">
+          <h5>Community</h5>
+          <p>Join a network of lifesavers and receive regular health tips.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Footer -->
-<footer>
+<footer class="footer">
   <div class="container">
-    <div class="row text-center text-md-start">
-      <div class="col-md-4 mb-3">
-        <h5>Blood Bank</h5>
-        <p>Every drop matters. Join us in saving lives today.</p>
-      </div>
-      <div class="col-md-4 mb-3">
-        <h5>Quick Links</h5>
-        <ul class="list-unstyled">
-          <li><a href="#">Home</a></li>
-          <li><a href="{% url 'donor_signup' %}">Donor</a></li>
-          <li><a href="{% url 'patient_signup' %}">Patient</a></li>
-          <li><a href="{% url 'subadmin_login' %}">Subadmin</a></li>
-        </ul>
-      </div>
-      <div class="col-md-4 mb-3">
-        <h5>Contact</h5>
-        <p>Email: help@bloodbank.org</p>
-        <p>Phone: +91 98765 43210</p>
-      </div>
-    </div>
-    <hr class="text-light" />
-    <p class="text-center mb-0">&copy; 2025 Blood Bank Management System. All rights reserved.</p>
+    <p class="mb-2">© 2025 Blood Bank Management System. All rights reserved.</p>
+    <p>Made with ❤️ for a healthier tomorrow.</p>
   </div>
 </footer>
 
@@ -227,5 +201,6 @@
 <script>
   AOS.init();
 </script>
+
 </body>
 </html>

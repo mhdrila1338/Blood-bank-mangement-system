@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Urgent Blood Requests</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background-color: #f9f9f9; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 20px; border-bottom: 1px solid #ccc; }
+        th { background-color: #e74c3c; color: white; }
+        h2 { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Urgent Blood Requests</h2>
+    <table>
+        <tr>
+            <th>Patient Name</th>
+            <th>Blood Group</th>
+            <th>Contact Number</th>
+            <th>Hospital</th>
+            <th>Reason</th>
+        </tr>
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.patient_name }}</td>
+            <td>{{ req.blood_group }}</td>
+            <td>{{ req.contact_number }}</td>
+            <td>{{ req.hospital_name }}</td>
+            <td>{{ req.reason }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No urgent requests found.</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

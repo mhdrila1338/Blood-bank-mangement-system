@@ -1,73 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Blood Requests</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f9f9f9;
-            margin: 0;
-            padding: 20px;
+            padding: 30px;
         }
         h2 {
             text-align: center;
-            color: #D62828;
+            color: #2c3e50;
         }
         table {
-            width: 90%;
-            margin: 20px auto;
+            width: 100%;
             border-collapse: collapse;
+            margin-top: 25px;
             background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
         th, td {
-            padding: 14px 16px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
         }
         th {
-            background-color: #D62828;
+            background-color: #2c3e50;
+            color: #fff;
+        }
+        a.button {
+            padding: 8px 12px;
+            background-color: #27ae60;
             color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+        a.button.reject {
+            background-color: #e74c3c;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
             font-weight: bold;
         }
-        tr:hover {
-            background-color: #f1f1f1;
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
-        .text-center {
-            text-align: center;
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
         }
     </style>
 </head>
 <body>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <h2>Blood Requests</h2>
 
     <table>
         <thead>
             <tr>
-                <th>Patient</th>
+                <th>Patient Name</th>
                 <th>Blood Group</th>
-                <th>Units Required</th>
-                <th>Reason</th>
+                <th>Units</th>
                 <th>Status</th>
-                <th>Requested On</th>
+                <th>Requested At</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for request in blood_requests %}
+            {% for req in blood_requests %}
             <tr>
-                <td>{{ request.patient.get_full_name }}</td>
-                <td>{{ request.blood_group }}</td>
-                <td>{{ request.units_required }}</td>
-                <td>{{ request.reason }}</td>
-                <td>{{ request.status }}</td>
-                <td>{{ request.requested_at|date:"Y-m-d H:i" }}</td>
+                <td>{{ req.patient.user.get_full_name }}</td>
+                <td>{{ req.blood_group }}</td>
+                <td>{{ req.units }}</td>
+                <td>{{ req.status }}</td>
+                <td>{{ req.requested_at }}</td>
+                <td>
+                    {% if req.status == 'Pending' %}
+                        <a href="{% url 'approve_request' req.id %}" class="button">Approve</a>
+                        <a href="{% url 'reject_blood_request' req.id %}" class="button reject">Reject</a>
+                    {% else %}
+                        {{ req.status }}
+                    {% endif %}
+                </td>
             </tr>
-            {% empty %}
-            <tr><td colspan="6" class="text-center">No blood requests found.</td></tr>
             {% endfor %}
         </tbody>
     </table>
+
 </body>
 </html>
